@@ -130,7 +130,7 @@ export function getCoin(id) {
     homepage: null,
     subreddit: null,
     categories: ['Demo data'],
-    votesUpPct: c.symbol === 'USDT' || c.symbol === 'USDC' ? null : Math.round(50 + 35 * r() + (c.change7d ?? 0)),
+    votesUpPct: c.symbol === 'USDT' || c.symbol === 'USDC' ? null : Math.max(20, Math.min(95, Math.round(50 + 35 * r() + (c.change7d ?? 0)))),
     community: { redditSubscribers: Math.round(1e5 + r() * 4e6), twitterFollowers: Math.round(2e5 + r() * 6e6), telegramUsers: null },
     genesisDate: null,
   };

@@ -86,7 +86,8 @@ main { flex: 1; }
 /* Gauge */
 .gauge { display: block; max-width: 100%; height: auto; }
 .gauge-value { font-size: 26px; font-weight: 700; font-family: Inter, sans-serif; }
-.gauge-label { font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase; }
+.gauge-wrap { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.gauge-label { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
 .gauge-tick { font-size: 8px; }
 
 /* Toolbar */
