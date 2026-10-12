@@ -74,7 +74,7 @@ function normCoin(d) {
 }
 
 export const getMarkets = (n) =>
-  cached(`markets:${n}`, 60_000, async () => {
+  cached(`markets:${n}`, 3 * 60_000, async () => {
     const data = await cg(
       `/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=${n}&page=1&sparkline=true&price_change_percentage=1h,24h,7d,30d`
     );
@@ -82,7 +82,7 @@ export const getMarkets = (n) =>
   });
 
 export const getCoin = (id) =>
-  cached(`coin:${id}`, 120_000, async () =>
+  cached(`coin:${id}`, 10 * 60_000, async () =>
     normCoin(
       await cg(
         `/coins/${encodeURIComponent(id)}?localization=false&tickers=false&market_data=true&community_data=true&developer_data=false&sparkline=false`
@@ -91,13 +91,13 @@ export const getCoin = (id) =>
   );
 
 export const getHistory = (id, days) =>
-  cached(`hist:${id}:${days}`, days <= 1 ? 60_000 : 300_000, async () => {
+  cached(`hist:${id}:${days}`, days <= 1 ? 15 * 60_000 : 30 * 60_000, async () => {
     const d = await cg(`/coins/${encodeURIComponent(id)}/market_chart?vs_currency=usd&days=${days}${days > 90 ? '&interval=daily' : ''}`);
     return { prices: d.prices || [], volumes: d.total_volumes || [] };
   });
 
 export const getTrending = () =>
-  cached('trending', 300_000, async () => {
+  cached('trending', 15 * 60_000, async () => {
     const d = await cg('/search/trending');
     return (d.coins || []).map(({ item }) => ({
       id: item.id,
@@ -109,7 +109,7 @@ export const getTrending = () =>
   });
 
 export const getGlobal = () =>
-  cached('global', 300_000, async () => {
+  cached('global', 15 * 60_000, async () => {
     const { data } = await cg('/global');
     return {
       totalMarketCap: data.total_market_cap?.usd,

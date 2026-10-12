@@ -1,13 +1,13 @@
 // Orchestrates data sources → sentiment → scoring → forecast.
 //  - getRankedList: quick scan of the top N coins (shared news/Reddit pools, hourly sparkline technicals)
-//  - getCoinAnalysis: deep dive for one coin (targeted news + Reddit + CryptoPanic, AI scoring, daily technicals)
+//  - getCoinAnalysis: deep dive for one coin (targeted Google News + Reddit search, optional AI scoring, daily technicals)
 // Deep results are cached and fed back into the ranked list so both views agree once a coin is analyzed.
 import { config, aiEnabled } from '../config.js';
 import { httpError } from '../http.js';
 import * as live from './market.js';
 import * as mock from './mock.js';
 import { getFearGreedLive } from './fearGreed.js';
-import { getAllNewsLive, getCryptoPanic, matchArticles, dedupe } from './news.js';
+import { getAllNewsLive, getCoinNewsSearch, matchArticles, dedupe } from './news.js';
 import { getHotPostsLive, searchCoinPostsLive } from './social.js';
 import { scoreTexts } from './sentiment.js';
 import { buildComponents, combine, isStablecoin, isWrapped } from './scoring.js';
@@ -133,28 +133,24 @@ export async function getCoinAnalysis(id) {
   const tech = technicalSnapshot(closes, 1);
   const flags = flagsFor(coin);
 
-  const [fg, trending, allNews, panic, posts] = await Promise.all([
+  const [fg, trending, allNews, searched, posts] = await Promise.all([
     getFearGreed(source),
     getTrending(source),
     getNews(source),
-    source === 'live' ? safe(() => getCryptoPanic(coin.symbol), []) : [],
+    source === 'live' ? safe(() => getCoinNewsSearch(coin), []) : [],
     source === 'live' ? safe(() => searchCoinPostsLive(coin), []) : matchArticles(coin, mock.getPosts()),
   ]);
 
-  const news = dedupe([...panic, ...matchArticles(coin, allNews)]).sort((a, b) => b.publishedAt - a.publishedAt).slice(0, 30);
+  const news = dedupe([...matchArticles(coin, allNews), ...searched])
+    .filter((a) => Date.now() - a.publishedAt < 7 * 86400_000)
+    .sort((a, b) => b.publishedAt - a.publishedAt)
+    .slice(0, 30);
   const socialPosts = posts.slice(0, 30);
 
   // Re-score everything for this coin (Claude when configured — understands context, sarcasm, relevance)
   const texts = [...news.map((a) => `${a.title}${a.summary ? '. ' + a.summary : ''}`), ...socialPosts.map((p) => `${p.title}${p.text ? '. ' + p.text : ''}`)];
   const { scores, engine } = await scoreTexts(texts, { coinName: `${coin.name} (${coin.symbol})` });
-  news.forEach((a, i) => {
-    let s = scores[i];
-    if (a.votes && a.votes.positive + a.votes.negative > 0) {
-      const v = (a.votes.positive - a.votes.negative) / (a.votes.positive + a.votes.negative + 2);
-      s = 0.7 * s + 0.3 * v;
-    }
-    a.sentiment = +s.toFixed(3);
-  });
+  news.forEach((a, i) => (a.sentiment = +scores[i].toFixed(3)));
   socialPosts.forEach((p, i) => (p.sentiment = +scores[news.length + i].toFixed(3)));
 
   const components = buildComponents({

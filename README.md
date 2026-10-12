@@ -33,7 +33,7 @@ npm run dev                  # API on :4000 + React on :5173 → open http://loc
 This repo includes a `render.yaml` Blueprint that runs the API and the React app as **one web service**:
 
 1. In the [Render dashboard](https://dashboard.render.com) choose **New → Blueprint** and pick this repository.
-2. Fill in the secret env vars when prompted (all optional, but `COINGECKO_API_KEY` is strongly recommended because Render's shared IPs hit CoinGecko's public rate limit).
+2. When prompted for `COINGECKO_API_KEY`, paste your free Demo key or leave it blank (recommended because Render's shared IPs hit CoinGecko's keyless limit).
 3. Click **Apply**. Build: installs server + client and runs `vite build`; start: `npm --prefix server start`. Health check: `/api/health`.
 
 Manual setup instead of a Blueprint: create a **Web Service** with
@@ -42,13 +42,14 @@ Manual setup instead of a Blueprint: create a **Web Service** with
 
 Render's free plan sleeps after 15 minutes idle, so the first request after a pause takes ~30–60 s.
 
-### API keys (all optional)
+### 100% free by default
 
-| Variable | What it unlocks |
-|---|---|
-| `ANTHROPIC_API_KEY` | **AI sentiment**: Claude scores every headline and post for the specific coin (understands context, sarcasm, relevance) and writes the analyst briefing. Without it, a crypto-tuned lexicon model is used. Model set by `ANTHROPIC_MODEL` (default `claude-sonnet-5-5`). |
-| `COINGECKO_API_KEY` | Free CoinGecko "Demo" key → higher rate limits. The app works without one. |
-| `CRYPTOPANIC_API_KEY` | Extra coin-specific news with community bullish/bearish votes. |
+Every data source is free and the app needs **no keys**. Optional settings:
+
+| Variable | Cost | What it does |
+|---|---|---|
+| `COINGECKO_API_KEY` | **Free** (Demo plan, 10k calls/month) | More reliable market data than keyless access — recommended on Render. Sign up on the Demo plan at coingecko.com/en/api/pricing. |
+| `ANTHROPIC_API_KEY` | Paid (per token) | Optional Claude AI scoring + analyst briefing. Leave blank to stay free; the built-in crypto lexicon model is used instead. |
 
 ---
 
@@ -61,11 +62,11 @@ Render's free plan sleeps after 15 minutes idle, so the first request after a pa
 | Trending searches (attention) | CoinGecko `/search/trending` | no |
 | Global market cap, BTC dominance | CoinGecko `/global` | no |
 | News & events | RSS: CoinDesk, Cointelegraph, Decrypt, Bitcoin Magazine, CryptoSlate, The Block | no |
-| News + community votes | CryptoPanic | yes |
+| Coin-specific news (deep analysis) | Google News RSS search | no |
 | Social chatter | Reddit: r/CryptoCurrency, r/CryptoMarkets, r/altcoin, the coin's own subreddit | no |
 | Market mood | Alternative.me Crypto Fear & Greed Index | no |
 
-Everything is cached server-side (prices 1 min, news/Reddit 10 min, deep analyses 15 min) with stale-on-error fallback, so the free tiers are respected.
+Everything is cached server-side (market list 3 min, coin detail 10 min, history 15–30 min, news/Reddit 10–20 min, deep analyses 15 min) with stale-on-error fallback, keeping usage inside CoinGecko's free 10k calls/month.
 
 ---
 
@@ -91,7 +92,7 @@ likelihood  = 50 + (logistic(3.5 × composite) − 50) × (0.55 + 0.45 × confid
 
 The likelihood shrinks toward 50% when evidence is thin, so a coin with two headlines can't get an extreme signal. Thresholds: **≥66 Invest · 56–65 Lean Invest · 45–55 Hold · 35–44 Lean Avoid · <35 Avoid**. Stablecoins are detected and shown as "Stablecoin" rather than scored.
 
-**Quick vs deep analysis.** The ranked list does a *quick scan* (shared news/Reddit pools matched by name/ticker, hourly-sparkline technicals) so 100 coins load in one pass. Opening a coin runs a *deep analysis* — targeted Reddit search + subreddit, CryptoPanic, AI re-scoring, daily technicals over 180 days. Deep results are cached and fed back into the list (marked `deep`), so both views agree.
+**Quick vs deep analysis.** The ranked list does a *quick scan* (shared news/Reddit pools matched by name/ticker, hourly-sparkline technicals) so 100 coins load in one pass. Opening a coin runs a *deep analysis* — targeted Google News + Reddit search, optional AI re-scoring, daily technicals over 180 days. Deep results are cached and fed back into the list (marked `deep`), so both views agree.
 
 ### 7-day expected trend
 
@@ -133,7 +134,7 @@ crypto-sentiment/
 │       └── services/
 │           ├── analysis.js      # orchestration: ranked list + deep analysis
 │           ├── market.js        # CoinGecko
-│           ├── news.js          # RSS + CryptoPanic + coin matching
+│           ├── news.js          # RSS feeds + Google News search + coin matching
 │           ├── social.js        # Reddit
 │           ├── fearGreed.js     # Alternative.me
 │           ├── sentiment.js     # crypto lexicon + Claude scoring

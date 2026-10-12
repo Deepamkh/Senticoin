@@ -1,8 +1,6 @@
-// News: major crypto RSS feeds (free, no key) + optional CryptoPanic aggregator with community votes.
+// News: major crypto RSS feeds + per-coin Google News RSS search. All free, no API keys.
 import Parser from 'rss-parser';
-import { config } from '../config.js';
 import { cached } from '../cache.js';
-import { fetchJson } from '../http.js';
 import { lexiconScore } from './sentiment.js';
 
 const parser = new Parser({ timeout: 8000, headers: { 'User-Agent': 'Mozilla/5.0 (CryptoSentimentApp/1.0)' } });
@@ -55,24 +53,29 @@ export const getAllNewsLive = () =>
     return items;
   });
 
-/** Coin-specific news from CryptoPanic (requires free API key). Community votes are kept for blending. */
-export const getCryptoPanic = (symbol) =>
-  !config.cryptopanicKey
-    ? Promise.resolve([])
-    : cached(`cpanic:${symbol}`, 10 * 60_000, async () => {
-        const d = await fetchJson(
-          `${config.cryptopanicBase}/posts/?auth_token=${config.cryptopanicKey}&currencies=${encodeURIComponent(symbol)}&public=true`
-        );
-        return (d.results || []).slice(0, 30).map((p) => ({
-          id: `cp-${p.id}`,
-          title: clean(p.title),
-          summary: clean(p.description || '').slice(0, 300),
-          link: p.original_url || p.url || (p.slug ? `https://cryptopanic.com/news/${p.id}/${p.slug}` : null),
-          source: p.source?.title || 'CryptoPanic',
-          publishedAt: Date.parse(p.published_at) || Date.now(),
-          votes: p.votes ? { positive: p.votes.positive || 0, negative: p.votes.negative || 0 } : null,
-        }));
-      });
+/**
+ * Coin-specific headlines from Google News RSS search (free, no key) — covers mainstream
+ * and smaller outlets, so less-covered coins still get news. Titles arrive as "Headline - Publisher".
+ */
+export const getCoinNewsSearch = (coin) =>
+  cached(`gnews:${coin.id}`, (v) => (v.length ? 20 * 60_000 : 5 * 60_000), async () => {
+    const q = encodeURIComponent(`"${coin.name}" (crypto OR ${coin.symbol}) when:7d`);
+    const feed = await parser.parseURL(`https://news.google.com/rss/search?q=${q}&hl=en-US&gl=US&ceid=US:en`);
+    return (feed.items || []).slice(0, 30).map((it) => {
+      const raw = clean(it.title);
+      const cut = raw.lastIndexOf(' - ');
+      const title = cut > 20 ? raw.slice(0, cut) : raw;
+      const source = cut > 20 ? raw.slice(cut + 3) : 'Google News';
+      return {
+        id: it.guid || it.link,
+        title,
+        summary: '',
+        link: it.link,
+        source,
+        publishedAt: Date.parse(it.isoDate || it.pubDate) || Date.now(),
+      };
+    });
+  });
 
 // ---- Matching headlines/posts to a coin ----
 const ALIASES = {

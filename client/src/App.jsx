@@ -35,7 +35,7 @@ export default function App() {
           <b>Not financial advice.</b> Signals are statistical estimates from public sentiment and price data and can be wrong. Crypto assets are highly volatile —
           only invest what you can afford to lose and do your own research.
         </p>
-        <p>Data: CoinGecko · CoinDesk, Cointelegraph, Decrypt & other RSS feeds · Reddit · Alternative.me Fear &amp; Greed · CryptoPanic (optional) · Claude (optional)</p>
+        <p>Data: CoinGecko · CoinDesk, Cointelegraph, Decrypt & other RSS feeds · Google News · Reddit · Alternative.me Fear &amp; Greed</p>
       </footer>
     </div>
   );

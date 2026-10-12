@@ -11,8 +11,6 @@ export const config = {
   anthropicKey: process.env.ANTHROPIC_API_KEY || '',
   anthropicModel: process.env.ANTHROPIC_MODEL || 'claude-sonnet-5-5',
 
-  cryptopanicKey: process.env.CRYPTOPANIC_API_KEY || '',
-  cryptopanicBase: process.env.CRYPTOPANIC_BASE || 'https://cryptopanic.com/api/developer/v2',
 };
 
 export const aiEnabled = () => Boolean(config.anthropicKey);
