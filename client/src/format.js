@@ -24,12 +24,12 @@ export function timeAgo(ts) {
 }
 
 export const SIGNAL_COLORS = {
-  invest: '#16c784',
-  'lean-invest': '#7fd36b',
-  hold: '#f5b942',
-  'lean-avoid': '#f08a4b',
-  avoid: '#ea3943',
-  stable: '#8a94a6',
+  invest: '#15964a',
+  'lean-invest': '#5fa317',
+  hold: '#c97a06',
+  'lean-avoid': '#e0631c',
+  avoid: '#d93636',
+  stable: '#71857a',
 };
 
 export function colorForLikelihood(p) {

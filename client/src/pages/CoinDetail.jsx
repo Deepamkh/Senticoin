@@ -3,7 +3,6 @@ import { Link, useParams } from 'react-router-dom';
 import { api } from '../api.js';
 import CoinIcon from '../components/CoinIcon.jsx';
 import LikelihoodGauge from '../components/LikelihoodGauge.jsx';
-import SignalBadge from '../components/SignalBadge.jsx';
 import PriceChart from '../components/PriceChart.jsx';
 import ForecastChart from '../components/ForecastChart.jsx';
 import SentimentBreakdown from '../components/SentimentBreakdown.jsx';
@@ -72,8 +71,7 @@ export default function CoinDetail() {
           </div>
         </div>
         <div className="hero-right">
-          <LikelihoodGauge value={analysis.likelihood} label="Investment likelihood" muted={stable} size={260} />
-          <SignalBadge signal={analysis.signal} large />
+          <LikelihoodGauge value={analysis.likelihood} label="Investment likelihood" muted={stable} size={300} zoneText={analysis.signal.label} />
           <div className="hero-metrics">
             <div><span className="muted small">Sentiment score</span><b>{analysis.score}/100</b></div>
             <div><span className="muted small">Confidence</span><b>{analysis.confidence}%</b></div>

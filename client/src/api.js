@@ -1,11 +1,19 @@
+// Resolves once the first API response (success or failure) comes back — the intro screen waits on it.
+let markReady;
+export const firstData = new Promise((resolve) => { markReady = resolve; });
+
 async function get(path) {
-  const res = await fetch(`/api${path}`);
-  if (!res.ok) {
-    let msg;
-    try { msg = (await res.json()).error; } catch { /* ignore */ }
-    throw new Error(msg || `Request failed (${res.status})`);
+  try {
+    const res = await fetch(`/api${path}`);
+    if (!res.ok) {
+      let msg;
+      try { msg = (await res.json()).error; } catch { /* ignore */ }
+      throw new Error(msg || `Request failed (${res.status})`);
+    }
+    return await res.json();
+  } finally {
+    if (path !== '/health') markReady();
   }
-  return res.json();
 }
 
 export const api = {

@@ -89,7 +89,7 @@ export default function Dashboard() {
           <section className="highlights">
             <div className="card market-gauge">
               <h3>Market-wide likelihood</h3>
-              <LikelihoodGauge value={avg} size={220} />
+              <LikelihoodGauge value={avg} size={280} />
               <div className="small muted center">Average across {ranked.length} non-stablecoin assets</div>
             </div>
             <Picks title="Top opportunities" coins={top} />

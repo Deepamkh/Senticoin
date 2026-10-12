@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, Route, Routes } from 'react-router-dom';
 import Dashboard from './pages/Dashboard.jsx';
 import CoinDetail from './pages/CoinDetail.jsx';
+import IntroSplash from './components/IntroSplash.jsx';
 
 export default function App() {
   const [health, setHealth] = useState(null);
@@ -11,9 +12,10 @@ export default function App() {
 
   return (
     <div className="app">
+      <IntroSplash />
       <header className="topbar">
         <Link to="/" className="brand">
-          <svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="var(--up)" /><path d="M8 20l5-6 4 3 7-8" stroke="#0b0f17" strokeWidth="3" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>
+          <svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="var(--accent)" /><path d="M8 20l5-6 4 3 7-8" stroke="#fff" strokeWidth="3" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>
           <span>Senti<b>Coin</b></span>
         </Link>
         <div className="topbar-right small">

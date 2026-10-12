@@ -3,11 +3,11 @@ import { formatCompact, formatPct, changeClass } from '../format.js';
 import CoinIcon from './CoinIcon.jsx';
 
 function fgColor(v) {
-  if (v < 25) return '#ea3943';
-  if (v < 45) return '#f08a4b';
-  if (v <= 55) return '#f5b942';
-  if (v < 75) return '#7fd36b';
-  return '#16c784';
+  if (v < 25) return '#d93636';
+  if (v < 45) return '#e0631c';
+  if (v <= 55) return '#c97a06';
+  if (v < 75) return '#5fa317';
+  return '#15964a';
 }
 
 export default function MarketOverview({ overview }) {
