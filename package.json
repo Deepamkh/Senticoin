@@ -1,0 +1,16 @@
+{
+  "name": "crypto-sentiment-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AI-powered crypto sentiment analysis & investment-likelihood signals (React + Node.js)",
+  "scripts": {
+    "install:all": "npm install && npm --prefix server install && npm --prefix client install",
+    "dev": "concurrently -n api,web -c green,cyan \"npm --prefix server run dev\" \"npm --prefix client run dev\"",
+    "demo": "concurrently -n api,web -c yellow,cyan \"npm --prefix server run demo\" \"npm --prefix client run dev\"",
+    "build": "npm --prefix client run build",
+    "start": "npm --prefix server start"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1"
+  }
+}

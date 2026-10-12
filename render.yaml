@@ -1,0 +1,30 @@
+# Render Blueprint — one web service: Express API + built React app on the same URL.
+# Deploy: Render dashboard → New → Blueprint → select this repo.
+services:
+  - type: web
+    name: senticoin
+    runtime: node
+    plan: free
+    buildCommand: npm --prefix server install && npm --prefix client install --include=dev && npm --prefix client run build
+    startCommand: npm --prefix server start
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: TOP_N
+        value: "50"
+      - key: MOCK_DATA
+        value: "false"
+      # Strongly recommended on Render: shared IPs hit CoinGecko's public rate limit quickly.
+      # Free key: https://www.coingecko.com/en/api
+      - key: COINGECKO_API_KEY
+        sync: false
+      # Optional: enables Claude AI sentiment scoring and analyst briefings.
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: ANTHROPIC_MODEL
+        value: claude-sonnet-5-5
+      # Optional: extra news source with community votes.
+      - key: CRYPTOPANIC_API_KEY
+        sync: false
