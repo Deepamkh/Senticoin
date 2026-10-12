@@ -64,6 +64,7 @@ Every data source is free and the app needs **no keys**. Optional settings:
 | News & events | RSS: CoinDesk, Cointelegraph, Decrypt, Bitcoin Magazine, CryptoSlate, The Block | no |
 | Coin-specific news (deep analysis) | Google News RSS search | no |
 | Social chatter | Reddit: r/CryptoCurrency, r/CryptoMarkets, r/altcoin, the coin's own subreddit | no |
+| Social chatter | Mastodon public hashtag timelines (#crypto, #bitcoin, #<coin name>, #<ticker>) — instances set by `MASTODON_INSTANCES` (default `mastodon.social`) | no |
 | Market mood | Alternative.me Crypto Fear & Greed Index | no |
 
 Everything is cached server-side (market list 3 min, coin detail 10 min, history 15–30 min, news/Reddit 10–20 min, deep analyses 15 min) with stale-on-error fallback, keeping usage inside CoinGecko's free 10k calls/month.
@@ -77,7 +78,7 @@ Each of 7 factors produces a reading from **−1 (bearish)** to **+1 (bullish)**
 | Factor | Weight | Logic |
 |---|---|---|
 | News sentiment | 22% | Recency-weighted (48h half-life) sentiment of coin-matched headlines; confidence grows with article count |
-| Social sentiment | 18% | Engagement-weighted Reddit post sentiment (65%) + CoinGecko community bullish votes (35%) |
+| Social sentiment | 18% | Engagement-weighted Reddit + Mastodon post sentiment (65%) + CoinGecko community bullish votes (35%) |
 | Price momentum | 20% | `tanh`-squashed blend of 24h, 7d, 30d change |
 | Technical indicators | 18% | RSI-14 (oversold = positive, overbought = negative) + price vs short/long moving averages |
 | Market mood | 10% | Fear & Greed Index |
@@ -92,7 +93,7 @@ likelihood  = 50 + (logistic(3.5 × composite) − 50) × (0.55 + 0.45 × confid
 
 The likelihood shrinks toward 50% when evidence is thin, so a coin with two headlines can't get an extreme signal. Thresholds: **≥66 Invest · 56–65 Lean Invest · 45–55 Hold · 35–44 Lean Avoid · <35 Avoid**. Stablecoins are detected and shown as "Stablecoin" rather than scored.
 
-**Quick vs deep analysis.** The ranked list does a *quick scan* (shared news/Reddit pools matched by name/ticker, hourly-sparkline technicals) so 100 coins load in one pass. Opening a coin runs a *deep analysis* — targeted Google News + Reddit search, optional AI re-scoring, daily technicals over 180 days. Deep results are cached and fed back into the list (marked `deep`), so both views agree.
+**Quick vs deep analysis.** The ranked list does a *quick scan* (shared news/Reddit pools matched by name/ticker, hourly-sparkline technicals) so 100 coins load in one pass. Opening a coin runs a *deep analysis* — targeted Google News + Reddit search + Mastodon hashtags, optional AI re-scoring, daily technicals over 180 days. Deep results are cached and fed back into the list (marked `deep`), so both views agree.
 
 ### 7-day expected trend
 
@@ -135,7 +136,7 @@ crypto-sentiment/
 │           ├── analysis.js      # orchestration: ranked list + deep analysis
 │           ├── market.js        # CoinGecko
 │           ├── news.js          # RSS feeds + Google News search + coin matching
-│           ├── social.js        # Reddit
+│           ├── social.js        # Reddit + Mastodon
 │           ├── fearGreed.js     # Alternative.me
 │           ├── sentiment.js     # crypto lexicon + Claude scoring
 │           ├── anthropic.js     # Claude Messages API client

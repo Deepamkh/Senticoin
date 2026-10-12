@@ -191,3 +191,6 @@ table.ranked { width: 100%; border-collapse: collapse; min-width: 980px; }
   .hero-right { min-width: 0; }
   .topbar { padding: 10px 16px; }
 }
+
+.feed-tabs { margin-bottom: 8px; }
+.platform-tag { font-weight: 600; margin-right: 6px; }

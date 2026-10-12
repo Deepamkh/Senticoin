@@ -8,6 +8,10 @@ export const config = {
   coingeckoKey: process.env.COINGECKO_API_KEY || '',
   coingeckoPro: process.env.COINGECKO_PRO === 'true',
 
+  // Mastodon instances whose public hashtag timelines are read (comma-separated hostnames).
+  mastodonInstances: (process.env.MASTODON_INSTANCES || 'mastodon.social')
+    .split(',').map((s) => s.trim().replace(/^https?:\/\//, '').replace(/\/$/, '')).filter(Boolean),
+
   anthropicKey: process.env.ANTHROPIC_API_KEY || '',
   anthropicModel: process.env.ANTHROPIC_MODEL || 'claude-sonnet-5-5',
 

@@ -21,3 +21,6 @@ services:
       # Leave blank if you don't have one; you can add it later under Environment.
       - key: COINGECKO_API_KEY
         sync: false
+      # Mastodon instances for social chatter (free, no key). Comma-separated hostnames.
+      - key: MASTODON_INSTANCES
+        value: mastodon.social

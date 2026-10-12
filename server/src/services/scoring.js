@@ -56,7 +56,9 @@ export function buildComponents({ coin, tech, news = [], posts = [], votesUpPct 
       }
       parts.push({ v: clamp((ws ? s / ws : 0) * 1.5), w: 0.65 });
       conf += 0.65 * Math.min(1, posts.length / 12);
-      bits.push(`${posts.length} Reddit post${posts.length > 1 ? 's' : ''}`);
+      const reddit = posts.filter((p) => p.platform !== 'mastodon').length;
+      const masto = posts.length - reddit;
+      bits.push([reddit && `${reddit} Reddit`, masto && `${masto} Mastodon`].filter(Boolean).join(' + ') + ` post${posts.length > 1 ? 's' : ''}`);
     }
     if (votesUpPct != null) {
       parts.push({ v: clamp((votesUpPct - 50) / 40), w: 0.35 });

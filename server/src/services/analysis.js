@@ -145,7 +145,7 @@ export async function getCoinAnalysis(id) {
     .filter((a) => Date.now() - a.publishedAt < 7 * 86400_000)
     .sort((a, b) => b.publishedAt - a.publishedAt)
     .slice(0, 30);
-  const socialPosts = posts.slice(0, 30);
+  const socialPosts = posts.slice(0, 35);
 
   // Re-score everything for this coin (Claude when configured — understands context, sarcasm, relevance)
   const texts = [...news.map((a) => `${a.title}${a.summary ? '. ' + a.summary : ''}`), ...socialPosts.map((p) => `${p.title}${p.text ? '. ' + p.text : ''}`)];

@@ -104,7 +104,7 @@ export default function CoinDetail() {
 
       <div className="grid-2">
         <FeedList title="News & events" items={data.news} kind="news" empty="No recent news coverage matched this coin." />
-        <FeedList title="Social chatter (Reddit)" items={data.social.posts} kind="social" empty="No recent Reddit discussion found (Reddit may be rate-limiting)." />
+        <FeedList title="Social chatter (Reddit + Mastodon)" items={data.social.posts} kind="social" empty="No recent Reddit or Mastodon discussion found for this coin." />
       </div>
 
       {(coin.description || coin.community) && (

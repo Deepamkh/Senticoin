@@ -185,7 +185,9 @@ function textsFor(kind) {
       const publishedAt = Date.now() - Math.floor(r() * 72) * HOUR - Math.floor(r() * HOUR);
       const item = kind === 'news'
         ? { id: `${def[0]}-n${k}`, title, summary: '', link: null, source: 'Demo Wire', publishedAt }
-        : { id: `${def[0]}-p${k}`, title, text: '', score: Math.floor(r() * 900), comments: Math.floor(r() * 300), subreddit: 'CryptoCurrency', link: null, publishedAt };
+        : k % 2 === 0
+          ? { id: `${def[0]}-p${k}`, platform: 'reddit', title, text: '', score: Math.floor(r() * 900), comments: Math.floor(r() * 300), source: 'r/CryptoCurrency', link: null, publishedAt }
+          : { id: `${def[0]}-m${k}`, platform: 'mastodon', title: `${title} #${c.name.toLowerCase().replace(/[^a-z0-9]/g, '')}`, text: '', score: Math.floor(r() * 120), comments: Math.floor(r() * 40), source: '@demo@mastodon.social', link: null, publishedAt };
       item.sentiment = lexiconScore(title);
       out.push(item);
     }
