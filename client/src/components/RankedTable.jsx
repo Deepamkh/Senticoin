@@ -68,7 +68,6 @@ export default function RankedTable({ coins }) {
                     <div className="coin-name">{c.name}</div>
                     <div className="coin-sym">
                       {c.symbol} · #{c.rank}
-                      {c.depth === 'deep' && <span className="chip chip-deep" title="Deep analysis (targeted news, social & AI) cached">deep</span>}
                       {c.isWrapped && <span className="chip">wrapped</span>}
                     </div>
                   </div>

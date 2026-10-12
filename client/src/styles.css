@@ -51,7 +51,6 @@ main { flex: 1; }
 .chip { display: inline-flex; align-items: center; gap: 4px; padding: 2px 9px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel-2); color: var(--muted); font-size: 11px; font-weight: 600; margin-left: 6px; }
 .chip-ai { color: var(--accent); border-color: var(--accent-light); background: var(--accent-soft); }
 .chip-warn { color: #8a5300; border-color: #f2d49b; background: #fff6e2; }
-.chip-deep { color: var(--accent); border-color: var(--accent-light); background: var(--accent-soft); }
 
 /* Cards */
 .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }

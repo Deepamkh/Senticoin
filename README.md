@@ -93,7 +93,7 @@ likelihood  = 50 + (logistic(3.5 × composite) − 50) × (0.55 + 0.45 × confid
 
 The likelihood shrinks toward 50% when evidence is thin, so a coin with two headlines can't get an extreme signal. Thresholds: **≥66 Invest · 56–65 Lean Invest · 45–55 Hold · 35–44 Lean Avoid · <35 Avoid**. Stablecoins are detected and shown as "Stablecoin" rather than scored.
 
-**Quick vs deep analysis.** The ranked list does a *quick scan* (shared news/Reddit pools matched by name/ticker, hourly-sparkline technicals) so 100 coins load in one pass. Opening a coin runs a *deep analysis* — targeted Google News + Reddit search + Mastodon hashtags, optional AI re-scoring, daily technicals over 180 days. Deep results are cached and fed back into the list (marked `deep`), so both views agree.
+**Quick vs deep analysis.** The ranked list does a *quick scan* (shared news/Reddit pools matched by name/ticker, hourly-sparkline technicals) so 100 coins load in one pass. Opening a coin runs a *deep analysis* — targeted Google News + Reddit search + Mastodon hashtags, optional AI re-scoring, daily technicals over 180 days. Deep results are cached for 15 minutes and fed back into the list, so both views agree.
 
 ### 7-day expected trend
 
